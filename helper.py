@@ -14,6 +14,7 @@ __email__ = "amannagpal4@gmail.com"
 def hex2uint16(s):
      # assumed s is up to four hex digits
      i = eval(s)
+     #check if there is an overflow 
      if i >= 2**15:
         # the idea we use here is that a negetive numebr is 2**n - that number
          i -= 2**16

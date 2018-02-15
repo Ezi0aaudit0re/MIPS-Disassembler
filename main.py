@@ -1,7 +1,6 @@
 """
-    This program acts as a MIPS deconstructor. 
+    This program acts as a MIPS disassembler. 
     Read through the hex instructions and decode it to assembly language instructions
-
 """
 
 __autor__ = "Aman Nagpal"
@@ -14,6 +13,9 @@ from helper import *
 
 
 def main():
+
+    print("MIPS DISASSEMBLER by Aman Nagpal:\n\n")
+    pc = PC
     for instr in INSTRUCTIONS:
         opcode = get_shifted_value(instr, OPCODE_MASK, OPCODE_SHIFT)
         src1reg = get_shifted_value(instr, SRC1REG_MASK, SRC1_SHIFT)
@@ -28,7 +30,8 @@ def main():
             func = get_func_value(func)
 
             # print the value 
-            print("{address}\t{func} ${des_reg}, ${src1_reg}, ${src2_reg}".format(address=None, func=func, des_reg=des_reg, src1_reg=src1reg, src2_reg=src2reg))
+            print("{address}\t{func} ${des_reg}, ${src1_reg}, ${src2_reg}".format(address=hex(pc), func=func, des_reg=des_reg, src1_reg=src1reg, src2_reg=src2reg))
+            pc = pc + 0x4
 
 
         else:
@@ -39,7 +42,17 @@ def main():
             opcode = get_op_value(opcode)
 
             if(opcode != "beq" and opcode != "bne"):
-                print("{address}\t{opcode} ${des_reg} {offset}(${src_reg})".format(address=None, opcode=opcode, des_reg=des_reg, offset=offset, src_reg=src1reg ))
+                print("{address}\t{opcode} ${des_reg}, {offset}(${src_reg})".format(address=hex(pc), opcode=opcode, des_reg=des_reg, offset=offset, src_reg=src1reg ))
+            
+            else:
+                #decompress offset
+                # target_address = old_pc + 0x4 + (compressed_pc_offest <<< 2) 
+                offset <<= 2
+                target_address = pc + 0x4 + offset
+                print("{address}\t{opcode} {reg1}, {reg2}, address {target}".format(address=hex(pc), opcode=opcode, reg1=src1reg, reg2=src2reg, target=hex(target_address)))
+
+            # increment the pc 
+            pc = pc + 0x4
             
 
 
